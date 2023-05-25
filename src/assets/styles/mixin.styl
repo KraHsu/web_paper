@@ -1,0 +1,31 @@
+info_hover()
+  transition: .3s
+  &:hover
+    background: #d4af7a
+    color: white
+
+button_hover()
+  transition: .3s
+  &:hover
+    color: #d4af7a
+
+:root
+  --input-bg: #f6f8fa
+  --input-focus-bg: white
+  --font-color: black
+  --font-disabled-color: #656d76
+  --font-headline: grey
+  --border-color: #eee
+  --border-grey: #eee
+  --border-focus-color: #409eff
+  --shadow-inset: inset 0 1px 0 rgba(208,215,222,0.2)
+:root.dark
+  --input-bg: #4e4e4e
+  --input-focus-bg: #ccc
+  --font-color: white
+  --font-disabled-color: #ddd
+  --font-headline: white
+  --border-color: #1f1f1f
+  --border-grey: #1f1f1f
+  --border-focus-color: #1f1f1f
+  --shadow-inset: none

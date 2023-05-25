@@ -1,0 +1,46 @@
+@import './mixin';
+@import './transition';
+@import './Header';
+@import './HeaderMenu';
+
+body
+  background: #eee
+  margin: 0
+  overflow-x: hidden
+
+.card_styl
+  background-color: white
+  transition: .3s
+  border-radius: 8px
+  &:hover
+    box-shadow: 6px 6px 10px #0000001a
+
+body[theme='dark']
+  background: #272727
+  margin: 0
+  .card_styl
+    background-color: #6b6b6b
+
+*::-webkit-scrollbar
+    display: none
+
+
+*::-webkit-scrollbar-thumb 
+    background-color: #0000004d;
+    border-radius: 8px;
+    cursor: pointer;
+
+
+*::-webkit-scrollbar-track 
+    background-color: var(--theme-bg);
+    border-radius: 10px;
+
+*
+  user-select: none
+
+[disabled]
+  cursor: not-allowed
+
+[theme='dark']
+  color white
+

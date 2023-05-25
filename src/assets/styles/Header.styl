@@ -1,0 +1,86 @@
+#header
+  position: fixed
+  top: 0
+  width: 100%
+
+.header_container
+  display: flex
+  align-items: center
+  justify-content: space-between
+
+  box-sizing: border-box
+  margin: auto
+  padding: 0 1rem
+  max-width: 84.25rem
+  height: 60px
+
+  // border-width: 0 1px 1px 0
+  // border-color: #fff9
+  // border-style: solid
+
+  // // background: linear-gradient(to bottom right,rgba(255,255,255,.5),rgba(255,255,255,.2))
+  // // box-shadow: 2px 2px 12px -4px #000
+  
+  font-size: 1.3em
+  color: #000
+  transition: all .5s
+  *
+    user-select: none
+  .site_info
+    display: flex
+    align-items: center
+    .site_name
+      margin: 0px 5px
+      padding: 0px 8px 4px
+      border-radius: 8px
+      text-decoration: none
+      color: #000
+      font-size: 20px
+      font-weight: 600
+      transition: .3s
+      info_hover()
+    .site_console_button_icon
+      height: 24px
+      padding: 4px
+      border-radius: 8px
+      transition: .3s
+      &:hover
+        background: #d4af7a
+        svg
+          fill: white
+  .nav_icons
+    display: flex
+    a
+      color #000
+    .icon
+      margin: 0 5px
+      padding: 4px
+      border-radius: 8px
+      transition: .3s
+      &:hover
+        background: #d4af7a
+        &.hf
+          fill: white
+        &.hc
+          color: white
+  .theme_button
+    display: flex
+    transform: rotate(0)
+    width: 24px
+    height: 24px
+    svg
+      position: absolute
+      left: calc(50% - 12px)
+      top: calc(50% - 12px)
+
+[theme="light"] .theme_button .dark
+  opacity: 0
+[theme="dark"] 
+  .theme_button .light
+    opacity: 0
+  .icon
+    fill: white
+  .site_info .site_name
+    color: white
+
+  

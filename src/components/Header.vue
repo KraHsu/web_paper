@@ -5,7 +5,7 @@ import search from '@/components/icons/search.vue'
 import person from '@/components/icons/person.vue'
 import logout from '@/components/icons/logout.vue'
 import theme_button from '@/components/icons/theme_button.vue';
-import HeaderMenu from './HeaderMenu.vue';
+import list_setting from './icons/list_setting.vue';
 import bell from './icons/bell.vue';
 import { computed, onMounted, ref } from 'vue';
 const router = useRouter()
@@ -56,7 +56,7 @@ onMounted(() => {
     <div class="header_container">
       <section class="site_info">
         <div class="site_console_button">
-          <HeaderMenu />
+          <list_setting @click="$emit('drawerappear')"/>
         </div>
         <RouterLink to="/" class="site_name">论文归档</RouterLink>
       </section>

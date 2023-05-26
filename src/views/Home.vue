@@ -1,6 +1,6 @@
 <script setup lang='ts'>
-import { onMounted } from 'vue';
-
+import { onMounted, ref } from 'vue';
+import PaperStatus from '@/components/user/PaperStatus.vue';
 onMounted(() => {
   console.log(`⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⢠⣤⣤⣄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⣤⡄⢀⣠⡀⠄
 ⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⣤⣤⣤⡀⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⢸⣿⣿⣿⣀⣤⣄⡀⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⢀⣀⣤⣤⣄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⣿⢰⡀⡿⣿⢀⣿⡟⠁⠄
@@ -30,14 +30,14 @@ onMounted(() => {
       </div>
     </section>
     <section class="main_container">
-      <section class="to_do card_styl">
+      <section class="message card_styl">
         
       </section>
       <section class="announcement card_styl">
 
       </section>
-      <section class="port card_styl">
-
+      <section class="paper_statu card_styl">
+        <PaperStatus></PaperStatus>
       </section>
     </section>
   </main>
@@ -51,7 +51,7 @@ onMounted(() => {
   grid-gap: 15px;
 }
 
-.to_do {
+.message {
   grid-area: 1 / 1 / 2 / 4;
 }
 
@@ -59,7 +59,7 @@ onMounted(() => {
   grid-area: 1 / 4 / 2 / 6;
 }
 
-.port {
+.paper_statu {
   height: 300px;
   grid-area: 2 / 1 / 3 / 6;
 }

@@ -80,8 +80,25 @@ const handleAvatarSuccess: UploadProps['onSuccess'] = (
 }
 
 const beforeAvatarUpload: UploadProps['beforeUpload'] = (rawFile) => {
-  if (rawFile.type !== 'image/jpeg') {
-    warn('图片必须是jpg格式！')
+  let reader = new FileReader()
+  reader.readAsDataURL(rawFile)
+  reader.onload = () => {
+    let img = new Image()
+    if (typeof reader.result === 'string') {
+      img.src = reader.result
+      img.onload = () => {
+        if (img.width / img.height !== 1) {
+          warn('图片必须是正方形！')
+          return false
+        }
+      }
+    } else {
+      warn("图片为空！")
+      return false
+    }
+  }
+  if (rawFile.type !== 'image/jpeg' && rawFile.type !== 'image/png') {
+    warn('图片必须是jpg或png格式！')
     return false
   } else if (rawFile.size / 1024 / 1024 > 2) {
     warn('图片大小不得超过2MB')
@@ -166,10 +183,12 @@ const uploadHeader = {
         <dl class="form-group">
           <dt><label class="avart_label">头 像</label></dt>
           <section class="avart_section">
-            <el-upload class="avatar-uploader" name="image" :data="uploadId" :action="configs.APIS.BaseUrl + configs.APIS.User.Portrait" :show-file-list="false" :on-success="handleAvatarSuccess" :before-upload="beforeAvatarUpload" :headers="uploadHeader">
+            <el-upload class="avatar-uploader" name="image" :data="uploadId"
+              :action="configs.APIS.BaseUrl + configs.APIS.User.Portrait" :show-file-list="false"
+              :on-success="handleAvatarSuccess" :before-upload="beforeAvatarUpload" :headers="uploadHeader">
               <el-avatar class="avatar" :size="200"
-              :src="personaldata.avatar ? configs.APIS.BaseUrl + '/portraits/' + personaldata.avatar : 'https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png'"
-              :alt="'@' + personaldata.name" />
+                :src="personaldata.avatar ? configs.APIS.BaseUrl + '/portraits/' + personaldata.avatar : 'https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png'"
+                :alt="'@' + personaldata.name" />
             </el-upload>
           </section>
         </dl>

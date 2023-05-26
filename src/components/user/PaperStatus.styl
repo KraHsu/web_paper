@@ -13,6 +13,89 @@
       margin: 15px 25px
       color: var(--font-headline)
       transition: .3s
-  .grid_container
+  .outer_container
+    overflow: auto
+    max-height: 690px
+    box-sizing: border-box
+    width: 100%
+    height: 100%
+    padding-left: 20px
+    padding-right: 20px
+    
+.my_papers
+  border-collapse: collapse
+  width: 100%
+  height: 100%
+  table-layout: fixed
+.my_papers_head
+  tr
     display: grid
-    grid-template-columns: 3fr 2fr
+    width: 100%
+    grid-template-columns: 60px 3fr 1fr 2fr 2fr 1.2fr 1fr 100px
+  .paper_th
+    writing-mode: horizontal-tb
+    font-weight: 700
+    text-align: start
+    padding: 15px 10px
+    line-height: 1rem
+    font-size: 1rem
+    color: var(--font-headline)
+
+.my_paper_body
+  height: 100%
+  overflow: auto
+  .empty
+      height: 100%
+  tr
+    display: grid
+    width: 100%
+    grid-template-columns: 60px 3fr 1fr 2fr 2fr 1.2fr 1fr 100px
+  .paper_td
+    border-top: 1px solid var(--border-color)
+    writing-mode: horizontal-tb
+    text-align: start
+    padding: 15px 10px
+    line-height: 1rem
+    font-size: 1rem
+    color: var(--font-color)
+    transition: .2s
+    .paper_type_button
+      padding: 5px 10px
+      border-radius: 10px
+      background-color: var(--type-bg)
+      &.pdf
+        background-color: var(--type-pdf-bg)
+      &.doc
+        background-color: var(--type-doc-bg)
+      &.docx
+        background-color: var(--type-docx-bg)
+    .paper_download_button
+      padding: 0px 20px
+      border-radius: 5px
+      border-color: var(--border-focus-color)
+      border-width: 1px
+      background-color: var(--button-bg)
+      transition: .2s
+      &:hover
+        cursor: pointer
+        background-color: var(--button-focus-bg)
+      .paper_dowload_button_icon
+        width: 16px
+      .paper_upload_button_icon
+        width: 14px
+    &.paper_headline
+      overflow: hidden
+    &.paper_created,
+    &.paper_updated
+      color: var(--font-grey)
+.paper_download,
+.paper_statu
+  display: flex;
+  padding: 0 !important;
+  align-items: center;
+  justify-content: center;
+.paper_statu_button
+  color: var(--font-grey)
+  background-color: var(--statu-unknown)
+  padding: 5px 10px
+  border-radius: 5px

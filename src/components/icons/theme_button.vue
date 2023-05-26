@@ -2,6 +2,11 @@
 import { ref, reactive, computed } from 'vue'
 
 const isLight = ref(true)
+
+document.body.addEventListener('classChange', () => {
+  isLight.value = document.body.classList.contains('light');
+});
+
 const svgClass = computed(() => {
   return isLight.value ? 'light' : 'dark'
 })

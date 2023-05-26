@@ -4,15 +4,20 @@
   display: flex
   flex-direction: column
   .paper_status_header
+    display: flex
+    width: 100%
     height: fit-content
-    hr
-      border: none
-      height: 2px
-      background: var(--border-color)
+    justify-content: space-between;
+    align-items: center
     .paper_status_headline
       margin: 15px 25px
+      width: fit-content
+      display: inline-block
       color: var(--font-headline)
       transition: .3s
+    .paper_search
+      width: 300px
+      margin-right: 20px
   .outer_container
     overflow: auto
     max-height: 690px
@@ -31,7 +36,7 @@
   tr
     display: grid
     width: 100%
-    grid-template-columns: 60px 3fr 1fr 2fr 2fr 1.2fr 1fr 100px
+    grid-template-columns: 100px 3fr 1fr 2fr 2fr 1.2fr 1fr 100px
   .paper_th
     writing-mode: horizontal-tb
     font-weight: 700
@@ -49,7 +54,7 @@
   tr
     display: grid
     width: 100%
-    grid-template-columns: 60px 3fr 1fr 2fr 2fr 1.2fr 1fr 100px
+    grid-template-columns: 100px 3fr 1fr 2fr 2fr 1.2fr 1fr 100px
   .paper_td
     border-top: 1px solid var(--border-color)
     writing-mode: horizontal-tb
@@ -96,6 +101,14 @@
   justify-content: center;
 .paper_statu_button
   color: var(--font-grey)
-  background-color: var(--statu-unknown)
   padding: 5px 10px
   border-radius: 5px
+  &.unknown
+    background-color: var(--statu-unknown)
+  &.completed
+    background-color: var(--statu-completed)
+  &.underReview
+    background-color: var(--statu-underReview)
+  &.needsModification
+    background-color: var(--statu-needsModification)
+    color: white

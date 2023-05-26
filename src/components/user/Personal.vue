@@ -21,12 +21,17 @@ if (responseData.avatar == '未知') {
 if (responseData.email == '未知') {
   responseData.email = responseData.id + '@bit.edu.cn (默认)'
 }
-const personaldata = reactive(responseData)
+const personaldata = reactive(responseData);
 
-var withoutChange = true;
-watch(personaldata, (ov, nv) => {
-  withoutChange = false;
-})
+const withoutChange = ref(true);
+var stopWatch: any;
+const beginWatch = () => {
+  stopWatch = watch(personaldata, (ov, nv) => {
+    withoutChange.value = false;
+    stopWatch()
+  })
+}
+beginWatch()
 
 const Exist = computed(() => {
   return response.code == 1 && personaldata;
@@ -57,26 +62,29 @@ const save = async () => {
   try {
     const response = await proxy.$post(configs.APIS.User.Update, personaldata, { headers: { 'token': token } })
     if (response.code == 1) {
-      succ("保存成功！", "您的信息已成功保存")
+      withoutChange.value = true;
+      succ("保存成功！", "您的信息已成功保存");
+      beginWatch();
     } else {
-      warn('保存失败！')
+      warn('保存失败！');
     }
   } catch (error) {
-    warn(String(error))
-    console.log(error)
+    warn(String(error));
+    console.log(error);
   }
 }
 
 const cancle = () => {
   Object.assign(personaldata, response.data)
-  withoutChange = true;
+  withoutChange.value = true;
+  beginWatch();
 }
 
 const handleAvatarSuccess: UploadProps['onSuccess'] = (
   response,
   uploadFile
 ) => {
-  succ("成功！", "头像上传成功！")
+  succ("头像上传成功！", "请刷新页面查看")
 }
 
 const beforeAvatarUpload: UploadProps['beforeUpload'] = (rawFile) => {

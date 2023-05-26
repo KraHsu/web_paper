@@ -1,181 +1,35 @@
 <script setup lang='ts'>
 import './PaperStatus.styl';
+import { Search } from '@element-plus/icons-vue'
+import { ref } from 'vue';
+import router from '@/router';
 import Download from '../icons/download.vue';
 import Upload from '../icons/upload.vue';
 import type { Paper } from '@/declare';
+import useCurrentInstance from "@/utils/useCurrentInstance";
+import { configs } from '@/config.js';
+const { proxy } = useCurrentInstance();
 // 标题 作者 创建时间 更新时间 类型 大小 语言 下载链接
-var papers: Paper[] = [
-  {
-    "statu": "未知",
-    "title": "探索量子算法",
-    "author": "张三",
-    "createdAt": "2023-01-01",
-    "updatedAt": "2023-01-05",
-    "type": "mobi",
-    "size": 3072,
-    "downloadLink": "javascript:void(0);"
-  },
-  {
-    "statu": "未知",
-    "title": "人工智能的社会影响",
-    "author": "李四",
-    "createdAt": "2023-01-10",
-    "updatedAt": "2023-01-15",
-    "type": "doc",
-    "size": 4096,
-    "downloadLink": "http://example.com/ai_impact.doc"
-  },
-  {
-    "statu": "未知",
-    "title": "深度学习的前沿",
-    "author": "王五",
-    "createdAt": "2023-01-20",
-    "updatedAt": "2023-01-25",
-    "type": "pdf",
-    "size": 5120,
-    "downloadLink": "http://example.com/deep_learning.pdf"
-  },
-  {
-    "statu": "未知",
-    "title": "物联网的安全挑战",
-    "author": "赵六",
-    "createdAt": "2023-01-30",
-    "updatedAt": "2023-02-05",
-    "type": "docx",
-    "size": 2048,
-    "downloadLink": "http://example.com/iot_security.docx"
-  },
-  {
-    "statu": "未知",
-    "title": "自动驾驶的道德问题",
-    "author": "周七",
-    "createdAt": "2023-02-10",
-    "updatedAt": "2023-02-15",
-    "type": "pdf",
-    "size": 3072,
-    "downloadLink": "http://example.com/autonomous_driving.pdf"
-  },
-  {
-    "statu": "未知",
-    "title": "机器学习在金融中的应用",
-    "author": "吴八",
-    "createdAt": "2023-02-20",
-    "updatedAt": "2023-02-25",
-    "type": "doc",
-    "size": 4096,
-    "downloadLink": "http://example.com/ml_finance.doc"
-  },
-  {
-    "statu": "未知",
-    "title": "虚拟现实的未来",
-    "author": "郑九",
-    "createdAt": "2023-03-01",
-    "updatedAt": "2023-03-05",
-    "type": "pdf",
-    "size": 5120,
-    "downloadLink": "http://example.com/vr_future.pdf"
-  },
-  {
-    "statu": "未知",
-    "title": "区块链技术的可能性",
-    "author": "王十",
-    "createdAt": "2023-03-10",
-    "updatedAt": "2023-03-15",
-    "type": "docx",
-    "size": 2048,
-    "downloadLink": "http://example.com/blockchain_potential.docx"
-  },
-  {
-    "statu": "未知",
-    "title": "云计算的安全性",
-    "author": "陈一",
-    "createdAt": "2023-03-20",
-    "updatedAt": "2023-03-25",
-    "type": "pdf",
-    "size": 3072,
-    "downloadLink": "http://example.com/cloud_security.pdf"
-  },
-  {
-    "statu": "未知",
-    "title": "数据科学的重要性",
-    "author": "林二",
-    "createdAt": "2023-03-30",
-    "updatedAt": "2023-04-05",
-    "type": "doc",
-    "size": 4096,
-    "downloadLink": "http://example.com/data_science_importance.doc"
-  },
-  {
-    "statu": "未知",
-    "title": "探索量子算法",
-    "author": "张三",
-    "createdAt": "2023-01-01",
-    "updatedAt": "2023-01-05",
-    "type": "mobi",
-    "size": 3072,
-    "downloadLink": "javascript:void(0);"
-  },
-  {
-    "statu": "未知",
-    "title": "探索量子算法",
-    "author": "张三",
-    "createdAt": "2023-01-01",
-    "updatedAt": "2023-01-05",
-    "type": "mobi",
-    "size": 3072,
-    "downloadLink": "javascript:void(0);"
-  },
-  {
-    "statu": "未知",
-    "title": "探索量子算法",
-    "author": "张三",
-    "createdAt": "2023-01-01",
-    "updatedAt": "2023-01-05",
-    "type": "mobi",
-    "size": 3072,
-    "downloadLink": "javascript:void(0);"
-  },
-  {
-    "statu": "未知",
-    "title": "探索量子算法",
-    "author": "张三",
-    "createdAt": "2023-01-01",
-    "updatedAt": "2023-01-05",
-    "type": "mobi",
-    "size": 3072,
-    "downloadLink": "javascript:void(0);"
-  },
-  {
-    "statu": "未知",
-    "title": "探索量子算法",
-    "author": "张三",
-    "createdAt": "2023-01-01",
-    "updatedAt": "2023-01-05",
-    "type": "mobi",
-    "size": 3072,
-    "downloadLink": "javascript:void(0);"
-  },
-  {
-    "statu": "未知",
-    "title": "探索量子算法",
-    "author": "张三",
-    "createdAt": "2023-01-01",
-    "updatedAt": "2023-01-05",
-    "type": "mobi",
-    "size": 3072,
-    "downloadLink": "javascript:void(0);"
-  },
-  {
-    "statu": "未知",
-    "title": "探索量子算法",
-    "author": "张三",
-    "createdAt": "2023-01-01",
-    "updatedAt": "2023-01-05",
-    "type": "mobi",
-    "size": 3072,
-    "downloadLink": "javascript:void(0);"
-  },
-];
+const papers = ref<Paper[]>([]);
+const paperSearch = ref('')
+const data = localStorage.getItem('user_data') ? JSON.parse(localStorage.getItem('user_data')!) : { token: null, user: { id: null } }
+const token = data.token
+const id = data.user.id;
+const SearchPapers = async () => {
+  const response = await proxy.$post(configs.APIS.User.Getallpaper, { "id": id, "keyWords": paperSearch.value }, { headers: { 'token': token } })
+  if (response.code == 1) {
+    papers.value = response.data;
+  }
+  console.table(response.data)
+}
+SearchPapers()
+
+const statusClass: Record<string, string> = {
+  "未知": 'unknown',
+  '已完成': 'completed',
+  '审核中': 'underReview',
+  '待修改': 'needsModification'
+}
 
 const clickLink = (url: string) => {
   let link = document.createElement('a');
@@ -195,12 +49,14 @@ const uploadFile = () => {
   <section class="paper_status_container">
     <header class="paper_status_header">
       <h1 class="paper_status_headline">我 的 论 文</h1>
-      <hr>
+      <el-input v-if="id" v-model="paperSearch" class="paper_search" placeholder="搜索" :prefix-icon="Search" clearable
+        @change="SearchPapers" />
     </header>
+    <hr v-if="id">
     <article class="outer_container">
       <template v-if="papers">
         <table class="my_papers">
-          <thead class="my_papers_head">
+          <thead class="my_papers_head" v-if="id">
             <!-- 标题 作者 创建时间 更新时间 类型 大小 语言 下载链接 -->
             <tr>
               <th class="paper_statu paper_th">状态</th>
@@ -214,7 +70,7 @@ const uploadFile = () => {
             </tr>
           </thead>
           <tbody class="my_paper_body">
-            <tr>
+            <tr v-if="id">
               <td class="paper_statu paper_td"></td>
               <td class="paper_headline paper_td">上传论文</td>
               <td class="paper_author paper_td"> - </td>
@@ -231,14 +87,14 @@ const uploadFile = () => {
             <template v-if="papers.length">
               <tr v-for="paper in papers">
                 <td class="paper_statu paper_td">
-                  <span class="paper_statu_button">
-                    {{ paper.statu }}
+                  <span class="paper_statu_button" :class="statusClass[paper.status]">
+                    {{ paper.status }}
                   </span>
                 </td>
                 <td class="paper_headline paper_td">{{ paper.title }}</td>
                 <td class="paper_author paper_td">{{ paper.author }}</td>
-                <td class="paper_created paper_td">{{ paper.createdAt }}</td>
-                <td class="paper_updated paper_td">{{ paper.updatedAt }}</td>
+                <td class="paper_created paper_td">{{ paper.createdAt.join('-') }}</td>
+                <td class="paper_updated paper_td">{{ paper.updatedAt.join('-') }}</td>
                 <td class="paper_type paper_td">
                   <span class="paper_type_button" :class="paper.type">
                     .{{ paper.type }}
@@ -252,8 +108,18 @@ const uploadFile = () => {
                 </td>
               </tr>
             </template>
+            <template v-else-if="id">
+              <el-empty class="empty" :image-size="200" description="未找到您的论文" />
+            </template>
             <template v-else>
-              <el-empty class="empty" :image-size="200" description="暂时没有论文" />
+              <el-result class="login_info" icon="info" title="提 示">
+                <template #sub-title>
+                  <p>查 看 论 文 请 先 登 陆</p>
+                </template>
+                <template #extra>
+                  <el-button type="primary" @click="router.push('/login')">登 陆</el-button>
+                </template>
+              </el-result>
             </template>
           </tbody>
         </table>
@@ -262,4 +128,14 @@ const uploadFile = () => {
   </section>
 </template>
 
-<style scoped></style>
+<style scoped >
+hr {
+  border: none;
+  height: 2px;
+  margin: 2px 0;
+  background: var(--border-color);
+}
+.login_info{
+  padding: 0;
+}
+</style>

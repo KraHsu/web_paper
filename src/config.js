@@ -9,7 +9,8 @@ const configs = {
       Select: '/student/get',
       Update: '/student/update',
       Portrait: '/file/upload/portrait',
-      Getallpaper: '/student/getallpapers',
+      Getallpaper: '/student/getpapers',
+      Fake: '/student/fakepapers',
     }
   },
 }

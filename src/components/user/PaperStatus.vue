@@ -4,6 +4,7 @@ import { Search } from '@element-plus/icons-vue'
 import { ref } from 'vue';
 import router from '@/router';
 import Download from '../icons/download.vue';
+import DropDown from '../icons/drop_down.vue';
 import Upload from '../icons/upload.vue';
 import type { Paper } from '@/declare';
 import useCurrentInstance from "@/utils/useCurrentInstance";
@@ -31,17 +32,76 @@ const statusClass: Record<string, string> = {
   '待修改': 'needsModification'
 }
 
-const clickLink = (url: string) => {
-  let link = document.createElement('a');
-  link.style.display = 'none';
-  link.href = url;
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
-}
+const downloadFile = (url: string, name: string) => {
+  url = configs.APIS.BaseUrl + '/downloadpaper/' + url;
+  fetch(url)
+    .then(response => response.blob())
+    .then(blob => {
+      const filename = name;
+
+      const fileUrl = URL.createObjectURL(blob);
+
+      let link = document.createElement('a');
+      link.style.display = 'none';
+      link.href = fileUrl;
+      link.setAttribute('download', filename); // 使用提取的文件名作为下载文件的名称
+
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+
+      URL.revokeObjectURL(fileUrl); // 释放URL对象
+    })
+    .catch(error => {
+      console.error('File download error:', error);
+    });
+};
 
 const uploadFile = () => {
 
+}
+
+const type_pdf = ref(true);
+const type_doc = ref(true);
+const type_docx = ref(true);
+const checkType = (type: string) => {
+  switch (type) {
+    case 'doc':
+      return type_doc.value;
+    case 'docx':
+      return type_docx.value;
+    case 'pdf':
+      return type_pdf.value;
+  }
+}
+
+const statu_unknown = ref(true);
+const statu_completed = ref(true);
+const statu_underReview = ref(true);
+const statu_needsModification = ref(true);
+const checkStatu = (statu: string) => {
+  switch (statu) {
+    case '未知':
+      return statu_unknown.value;
+    case '已完成':
+      return statu_completed.value;
+    case '审核中':
+      return statu_underReview.value;
+    case '待修改':
+      return statu_needsModification.value;
+  }
+}
+
+const DownloadAll = () => {
+  const selectedButtons = document.querySelectorAll("[selected='true'] .paper_download_button");
+  selectedButtons.forEach(button => {
+    const event = new MouseEvent('click', {
+      view: window,
+      bubbles: true,
+      cancelable: true
+    });
+    button.dispatchEvent(event);
+  });
 }
 </script>
 
@@ -59,14 +119,41 @@ const uploadFile = () => {
           <thead class="my_papers_head" v-if="id">
             <!-- 标题 作者 创建时间 更新时间 类型 大小 语言 下载链接 -->
             <tr>
-              <th class="paper_statu paper_th">状态</th>
+              <th class="paper_statu paper_th">状态
+                <el-dropdown trigger="click">
+                  <DropDown class="paper_statu_drop_down"></DropDown>
+                  <template #dropdown>
+                    <section class="dropdown_container">
+                      <el-checkbox v-model="statu_unknown" label="未知" size="large" />
+                      <el-checkbox v-model="statu_completed" label="已完成" size="large" />
+                      <el-checkbox v-model="statu_underReview" label="审核中" size="large" />
+                      <el-checkbox v-model="statu_needsModification" label="待修改" size="large" />
+                    </section>
+                  </template>
+                </el-dropdown>
+              </th>
               <th class="paper_headline paper_th">标题</th>
               <th class="paper_author paper_th">作者</th>
               <th class="paper_created paper_th">创建时间</th>
               <th class="paper_updated paper_th">更新时间</th>
-              <th class="paper_type paper_th">类型</th>
+              <th class="paper_type paper_th">类型
+                <el-dropdown trigger="click">
+                  <DropDown class="paper_type_drop_down"></DropDown>
+                  <template #dropdown>
+                    <section class="dropdown_container">
+                      <el-checkbox v-model="type_pdf" label=".pdf" size="large" />
+                      <el-checkbox v-model="type_doc" label=".doc" size="large" />
+                      <el-checkbox v-model="type_docx" label=".docx" size="large" />
+                    </section>
+                  </template>
+                </el-dropdown>
+              </th>
               <th class="paper_size paper_th">大小</th>
-              <th class="paper_download paper_th">下载链接</th>
+              <th class="paper_download paper_th">下载链接
+                <el-tooltip class="box-item" effect="light" content="下载全部符合条件的文件" placement="top">
+                  <Download class="download_all_papers" @click="DownloadAll()"></Download>
+                </el-tooltip>
+              </th>
             </tr>
           </thead>
           <tbody class="my_paper_body">
@@ -85,7 +172,7 @@ const uploadFile = () => {
               </td>
             </tr>
             <template v-if="papers.length">
-              <tr v-for="paper in papers">
+              <tr v-for="paper in papers" :selected="checkType(paper.type) && checkStatu(paper.status)">
                 <td class="paper_statu paper_td">
                   <span class="paper_statu_button" :class="statusClass[paper.status]">
                     {{ paper.status }}
@@ -102,7 +189,7 @@ const uploadFile = () => {
                 </td>
                 <td class="paper_size paper_td">{{ paper.size }}</td>
                 <td class="paper_download paper_td">
-                  <button class="paper_download_button" @click="clickLink(paper.downloadLink)">
+                  <button class="paper_download_button" @click="downloadFile(paper.downloadLink, paper.title)">
                     <Download class="paper_dowload_button_icon"></Download>
                   </button>
                 </td>
@@ -135,7 +222,8 @@ hr {
   margin: 2px 0;
   background: var(--border-color);
 }
-.login_info{
+
+.login_info {
   padding: 0;
 }
 </style>

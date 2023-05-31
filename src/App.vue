@@ -43,8 +43,25 @@ const changeLight = (val: any) => {
 </template>
 
 <style>
+#app{
+  height: 100vh;
+}
+.footer-container{
+  position: relative;
+  bottom: 0;
+}
 .drawer_modal{
   background-color: var(--mask-bg);
   backdrop-filter: blur(5px);
+}
+.beian{
+  display: block;
+  width: 100%;
+  text-align: center;
+  text-decoration: none;
+  color: var(--font-disabled-color);
+  margin-bottom: 15px;
+  position: absolute;
+  bottom: 0;
 }
 </style>

@@ -41,6 +41,7 @@
     writing-mode: horizontal-tb
     font-weight: 700
     text-align: start
+    verticle-align: middle
     padding: 15px 10px
     line-height: 1rem
     font-size: 1rem
@@ -55,6 +56,8 @@
     display: grid
     width: 100%
     grid-template-columns: 100px 3fr 1fr 2fr 2fr 1.2fr 1fr 100px
+    &[selected='false']
+      display: none
   .paper_td
     border-top: 1px solid var(--border-color)
     writing-mode: horizontal-tb
@@ -86,6 +89,8 @@
         background-color: var(--button-focus-bg)
       .paper_dowload_button_icon
         width: 16px
+        path
+          stroke: #333
       .paper_upload_button_icon
         width: 14px
     &.paper_headline
@@ -112,3 +117,27 @@
   &.needsModification
     background-color: var(--statu-needsModification)
     color: white
+
+
+.dropdown_container
+  padding: 3px 10px
+  display: flex
+  flex-direction: column
+  .el-checkbox
+    margin: 0
+    height: 30px !important
+  .el-checkbox__label
+    font-size: 16px !important
+
+.paper_type_drop_down
+  width: 1rem
+  height: 1rem
+.paper_statu_drop_down
+  width: 1rem
+  height: 1rem
+  margin-left: 5px
+
+.download_all_papers
+  width: 16px
+  margin-left: 5px
+  cursor pointer

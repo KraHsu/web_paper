@@ -11,6 +11,7 @@ const configs = {
       Portrait: '/file/upload/portrait',
       Getallpaper: '/student/getpapers',
       Fake: '/student/fakepapers',
+      Paper: '/file/upload/student/paper'
     }
   },
 }

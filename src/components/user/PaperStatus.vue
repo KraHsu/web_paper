@@ -1,4 +1,6 @@
 <script setup lang='ts'>
+import JSZip from 'jszip';
+// 文件压缩
 import './PaperStatus.styl';
 import { Search } from '@element-plus/icons-vue'
 import { ref } from 'vue';
@@ -9,6 +11,9 @@ import Upload from '../icons/upload.vue';
 import type { Paper } from '@/declare';
 import useCurrentInstance from "@/utils/useCurrentInstance";
 import { configs } from '@/config.js';
+
+import type { UploadProps, UploadUserFile } from 'element-plus'
+
 const { proxy } = useCurrentInstance();
 // 标题 作者 创建时间 更新时间 类型 大小 语言 下载链接
 const papers = ref<Paper[]>([]);
@@ -16,6 +21,7 @@ const paperSearch = ref('')
 const data = localStorage.getItem('user_data') ? JSON.parse(localStorage.getItem('user_data')!) : { token: null, user: { id: null } }
 const token = data.token
 const id = data.user.id;
+const author = '佚名';
 const SearchPapers = async () => {
   const response = await proxy.$post(configs.APIS.User.Getallpaper, { "id": id, "keyWords": paperSearch.value }, { headers: { 'token': token } })
   if (response.code == 1) {
@@ -92,16 +98,66 @@ const checkStatu = (statu: string) => {
   }
 }
 
-const DownloadAll = () => {
-  const selectedButtons = document.querySelectorAll("[selected='true'] .paper_download_button");
-  selectedButtons.forEach(button => {
-    const event = new MouseEvent('click', {
-      view: window,
-      bubbles: true,
-      cancelable: true
-    });
-    button.dispatchEvent(event);
+const downloadFilesAsZip = (files: Record<string, string>) => {
+  const zip = new JSZip();
+
+  const fetchPromises = Object.keys(files).map((key) => {
+    const filename = key;
+    const url = files[key];
+    return fetch(url)
+      .then(response => response.blob())
+      .then(blob => {
+        zip.file(filename, blob);
+      })
+      .catch(error => {
+        console.error(`Error downloading file ${filename}:`, error);
+      });
   });
+
+  Promise.all(fetchPromises)
+    .then(() => {
+      zip.generateAsync({ type: 'blob' })
+        .then(content => {
+          const fileUrl = URL.createObjectURL(content);
+          const link = document.createElement('a');
+          link.style.display = 'none';
+          link.href = fileUrl;
+          link.setAttribute('download', 'files.zip');
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+          URL.revokeObjectURL(fileUrl);
+        })
+        .catch(error => {
+          console.error('Error creating zip file:', error);
+        });
+    })
+    .catch(error => {
+      console.error('Error downloading files:', error);
+    });
+};
+
+const DownloadAll = () => {
+  const selectedFiles = document.querySelectorAll('[selected="true"] .paper_download_button');
+  const fileDict: Record<string, string> = {};
+
+  selectedFiles.forEach(fileElement => {
+    const fileName: string = fileElement.getAttribute('file-name') || '';
+    const fileLink: string = `${configs.APIS.BaseUrl}/downloadpaper/${fileElement.getAttribute('file-link')}`;
+    // console.table({fileName, fileLink});
+    fileDict[fileName] = fileLink;
+  });
+
+  downloadFilesAsZip(fileDict);
+}
+
+const uploadData = {
+  "id": id,
+  "author": author,
+  "title": 'title',
+}
+const uploadHeader = {
+  'token': token
 }
 </script>
 
@@ -166,9 +222,11 @@ const DownloadAll = () => {
               <td class="paper_type paper_td"> - </td>
               <td class="paper_size paper_td"> - </td>
               <td class="paper_download paper_td">
-                <button class="paper_download_button" @click="uploadFile()">
-                  <Upload class="paper_upload_button_icon"></Upload>
-                </button>
+                <el-upload class="upload-demo" :action="configs.APIS.BaseUrl + configs.APIS.User.Paper" :data="uploadData" :headers="uploadHeader">
+                  <button class="paper_download_button">
+                    <Upload class="paper_upload_button_icon"></Upload>
+                  </button>
+                </el-upload>
               </td>
             </tr>
             <template v-if="papers.length">
@@ -189,7 +247,8 @@ const DownloadAll = () => {
                 </td>
                 <td class="paper_size paper_td">{{ paper.size }}</td>
                 <td class="paper_download paper_td">
-                  <button class="paper_download_button" @click="downloadFile(paper.downloadLink, paper.title)">
+                  <button class="paper_download_button" :file-link="paper.downloadLink"
+                    :file-name="paper.title + '.' + paper.type" @click="downloadFile(paper.downloadLink, paper.title)">
                     <Download class="paper_dowload_button_icon"></Download>
                   </button>
                 </td>

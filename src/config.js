@@ -1,6 +1,6 @@
 const configs = {
   APIS: {
-    BaseUrl: 'http://192.168.137.145:8080',
+    BaseUrl: 'http://192.168.137.191:8080',
     // BaseUrl: 'https://api.haichi.top:8080',
     User: {
       Login: '/user/login',
@@ -11,7 +11,8 @@ const configs = {
       Portrait: '/file/upload/portrait',
       Getallpaper: '/student/getpapers',
       Fake: '/student/fakepapers',
-      Paper: '/file/upload/student/paper'
+      Paper: '/file/upload/student/paper',
+      SetStatus: '/teacher/setstatus',
     }
   },
 }

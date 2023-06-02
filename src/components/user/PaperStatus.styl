@@ -36,7 +36,7 @@
   tr
     display: grid
     width: 100%
-    grid-template-columns: 100px 3fr 1fr 2fr 2fr 1.2fr 1fr 100px
+    grid-template-columns: 100px 150px 100px 120px 120px 1fr 81px 100px
   .paper_th
     writing-mode: horizontal-tb
     font-weight: 700
@@ -55,7 +55,7 @@
   tr
     display: grid
     width: 100%
-    grid-template-columns: 100px 3fr 1fr 2fr 2fr 1.2fr 1fr 100px
+    grid-template-columns: 100px 150px 100px 120px 120px 1fr 81px 100px
     &[selected='false']
       display: none
   .paper_td
@@ -67,6 +67,9 @@
     font-size: 1rem
     color: var(--font-color)
     transition: .2s
+    overflow hidden
+    text-overflow: ellipsis
+    white-space: nowrap
     .paper_type_button
       padding: 5px 10px
       border-radius: 10px

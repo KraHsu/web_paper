@@ -1,9 +1,10 @@
 <script setup lang='ts'>
 import JSZip from 'jszip';
 // 文件压缩
+
 import './PaperStatus.styl';
 import { Search } from '@element-plus/icons-vue'
-import { ref } from 'vue';
+import { ref, reactive } from 'vue';
 import router from '@/router';
 import Download from '../icons/download.vue';
 import DropDown from '../icons/drop_down.vue';
@@ -11,19 +12,39 @@ import Upload from '../icons/upload.vue';
 import type { Paper } from '@/declare';
 import useCurrentInstance from "@/utils/useCurrentInstance";
 import { configs } from '@/config.js';
-
-import type { UploadProps, UploadUserFile } from 'element-plus'
-
+import { ElNotification } from 'element-plus';
 const { proxy } = useCurrentInstance();
 // 标题 作者 创建时间 更新时间 类型 大小 语言 下载链接
+
+
+// 提示消息
+const succ = (t: string, m: string) => {
+  ElNotification({
+    title: t,
+    message: m,
+    type: 'success',
+    showClose: false,
+    duration: 2000
+  })
+}
+
+const warn = (m: string) => {
+  ElNotification({
+    title: 'Error!!',
+    message: m,
+    type: 'error',
+    duration: 2000
+  })
+}
+
 const papers = ref<Paper[]>([]);
 const paperSearch = ref('')
 const data = localStorage.getItem('user_data') ? JSON.parse(localStorage.getItem('user_data')!) : { token: null, user: { id: null } }
 const token = data.token
 const id = data.user.id;
-const author = '佚名';
+const identy = data.user.status;
 const SearchPapers = async () => {
-  const response = await proxy.$post(configs.APIS.User.Getallpaper, { "id": id, "keyWords": paperSearch.value }, { headers: { 'token': token } })
+  const response = await proxy.$post(configs.APIS.User.Getallpaper.replace('student', identy), { "id": id, "keyWords": paperSearch.value }, { headers: { 'token': token } })
   if (response.code == 1) {
     papers.value = response.data;
   }
@@ -151,13 +172,36 @@ const DownloadAll = () => {
   downloadFilesAsZip(fileDict);
 }
 
-const uploadData = {
+const dialogFormVisible = ref(false);
+const uploadData = reactive({
   "id": id,
-  "author": author,
-  "title": 'title',
-}
+  "author": '',
+  "title": '',
+  "signup": '未签名',
+})
+const TuploadData = reactive({
+  "id": '',
+  "status": '',
+})
 const uploadHeader = {
   'token': token
+}
+
+const openDialog = () => {
+  dialogFormVisible.value = true;
+}
+
+const confirmDialog = () => {
+  dialogFormVisible.value = false;
+}
+
+const uploadSuccess = (response: any) => {
+  if (response.code == 1) {
+    succ('成功！', '论文已上传成功')
+    SearchPapers()
+  } else {
+    warn(response.msg)
+  }
 }
 </script>
 
@@ -222,11 +266,63 @@ const uploadHeader = {
               <td class="paper_type paper_td"> - </td>
               <td class="paper_size paper_td"> - </td>
               <td class="paper_download paper_td">
-                <el-upload class="upload-demo" :action="configs.APIS.BaseUrl + configs.APIS.User.Paper" :data="uploadData" :headers="uploadHeader">
-                  <button class="paper_download_button">
-                    <Upload class="paper_upload_button_icon"></Upload>
-                  </button>
-                </el-upload>
+                <button class="paper_download_button" @click="openDialog">
+                  <Upload class="paper_upload_button_icon"></Upload>
+                </button>
+                <el-dialog v-if="identy == 'student'" v-model="dialogFormVisible" title="Shipping address">
+                  <el-form :model="uploadData">
+                    <el-form-item label="作者" label-width="140px">
+                      <el-input v-model="uploadData.author" autocomplete="off" />
+                    </el-form-item>
+                    <el-form-item label="标题" label-width="140px">
+                      <el-input v-model="uploadData.title">
+                      </el-input>
+                    </el-form-item>
+                    <el-form-item label="是否已签名" label-width="140px">
+                      <el-select v-model="uploadData.signup" placeholder="是否已签名">
+                        <el-option label="已签名" value="已签名" />
+                        <el-option label="未签名" value="未签名" />
+                      </el-select>
+                    </el-form-item>
+                  </el-form>
+                  <template #footer>
+                    <span class="dialog-footer">
+                      <el-button @click="dialogFormVisible = false">取消</el-button>
+                      <el-upload class="upload-demo" :action="configs.APIS.BaseUrl + configs.APIS.User.Paper"
+                        :data="uploadData" :headers="uploadHeader" :show-file-list="false" :on-success="uploadSuccess">
+                        <el-button type="primary" @click="confirmDialog">
+                          上传文件
+                        </el-button>
+                      </el-upload>
+                    </span>
+                  </template>
+                </el-dialog>
+                <el-dialog v-else v-model="dialogFormVisible" title="Shipping address">
+                  <el-form :model="TuploadData">
+                    <el-form-item label="文章" label-width="140px">
+                      <el-select v-model="TuploadData.id" placeholder="请选择文章">
+                        <el-option v-for="paper in papers" :label="`${paper.title} | ${paper.author}`" :value="paper.id" />
+                      </el-select>
+                    </el-form-item>
+                    <el-form-item label="是否需要修改" label-width="140px">
+                      <el-select v-model="TuploadData.status" placeholder="是否需要修改">
+                        <el-option label="需要修改" value="待修改" />
+                        <el-option label="无需修改" value="已完成" />
+                      </el-select>
+                    </el-form-item>
+                  </el-form>
+                  <template #footer>
+                    <span class="dialog-footer">
+                      <el-button @click="dialogFormVisible = false">取消</el-button>
+                      <el-upload class="upload-demo" :action="configs.APIS.BaseUrl + configs.APIS.User.SetStatus"
+                        :data="TuploadData" :headers="uploadHeader" :show-file-list="false" :on-success="uploadSuccess">
+                        <el-button type="primary" @click="confirmDialog">
+                          上传文件
+                        </el-button>
+                      </el-upload>
+                    </span>
+                  </template>
+                </el-dialog>
               </td>
             </tr>
             <template v-if="papers.length">
@@ -284,5 +380,15 @@ hr {
 
 .login_info {
   padding: 0;
+}
+
+.dialog-footer {
+  display: flex;
+  width: 100%;
+  flex-direction: row-reverse;
+}
+
+.dialog-footer button:first-child {
+  margin-right: 10px;
 }
 </style>

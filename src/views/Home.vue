@@ -30,12 +30,6 @@ onMounted(() => {
       </div>
     </section>
     <section class="main_container">
-      <section class="message card_styl">
-        
-      </section>
-      <section class="announcement card_styl">
-
-      </section>
       <section class="paper_statu card_styl">
         <PaperStatus></PaperStatus>
       </section>
@@ -44,24 +38,8 @@ onMounted(() => {
 </template>
 
 <style scoped>
-.main_container {
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  grid-template-rows: 400px 1fr;
-  grid-gap: 15px;
-}
-
-.message {
-  grid-area: 1 / 1 / 2 / 4;
-}
-
-.announcement {
-  grid-area: 1 / 4 / 2 / 6;
-}
-
 .paper_statu {
-  height: 300px;
-  grid-area: 2 / 1 / 3 / 6;
+  height: 600px;
 }
 
 #main {

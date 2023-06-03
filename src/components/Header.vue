@@ -49,6 +49,8 @@ onMounted(() => {
   });
 })
 
+const data = localStorage.getItem('user_data') ? JSON.parse(localStorage.getItem('user_data')!) : { token: null, user: { id: null } }
+const hasnew = data.hasNew
 </script>
 
 <template>
@@ -63,11 +65,11 @@ onMounted(() => {
       <section class="nav_mask"></section>
       <section class="menus"></section>
       <section class="nav_icons">
-        <RouterLink to="search">
+        <RouterLink to="/user">
           <search class="icon" />
         </RouterLink>
-        <RouterLink to="msg">
-          <bell class="icon" />
+        <RouterLink to="/user/message">
+          <bell class="icon" :hasnew="hasnew"/>
         </RouterLink>
         <Transition name="fade">
           <a v-if="User" href="javascript:void(0);" class="user_icon">

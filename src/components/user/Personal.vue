@@ -44,6 +44,7 @@ try {
     }
     Object.assign(personaldata, response.data)
     loading.value = false
+    beginWatch()
   }, () => {
     loading.value = false
   })
@@ -58,7 +59,6 @@ const beginWatch = () => {
     stopWatch()
   })
 }
-beginWatch()
 
 const succ = (t: string, m: string) => {
   ElNotification({
@@ -146,7 +146,7 @@ const uploadHeader = {
       <h1 class="edit_profile_headline">编辑个人资料</h1>
       <hr>
     </header>
-    <template v-if="Exist && personaldata && 'name' in personaldata">
+    <template v-if="Exist && personaldata.realName">
       <article class="grid_container">
         <main class="profile_container">
           <dl class="form-group">

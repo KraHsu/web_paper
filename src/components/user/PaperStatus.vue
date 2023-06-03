@@ -48,7 +48,7 @@ const SearchPapers = async () => {
   if (response.code == 1) {
     papers.value = response.data;
   }
-  console.table(response.data)
+  // console.table(response.data)
 }
 SearchPapers()
 
@@ -259,7 +259,9 @@ const uploadSuccess = (response: any) => {
           <tbody class="my_paper_body">
             <tr v-if="id">
               <td class="paper_statu paper_td"></td>
-              <td class="paper_headline paper_td">上传论文</td>
+              <td class="paper_headline paper_td">
+                {{identy == 'student' ? '上传论文' : '修 改 论 文 状 态'}}
+              </td>
               <td class="paper_author paper_td"> - </td>
               <td class="paper_created paper_td"> - </td>
               <td class="paper_updated paper_td"> - </td>
@@ -269,7 +271,7 @@ const uploadSuccess = (response: any) => {
                 <button class="paper_download_button" @click="openDialog">
                   <Upload class="paper_upload_button_icon"></Upload>
                 </button>
-                <el-dialog v-if="identy == 'student'" v-model="dialogFormVisible" title="Shipping address">
+                <el-dialog v-if="identy == 'student'" v-model="dialogFormVisible" title="上传论文">
                   <el-form :model="uploadData">
                     <el-form-item label="作者" label-width="140px">
                       <el-input v-model="uploadData.author" autocomplete="off" />
@@ -297,7 +299,7 @@ const uploadSuccess = (response: any) => {
                     </span>
                   </template>
                 </el-dialog>
-                <el-dialog v-else v-model="dialogFormVisible" title="Shipping address">
+                <el-dialog v-else v-model="dialogFormVisible" title="修改论文状态">
                   <el-form :model="TuploadData">
                     <el-form-item label="文章" label-width="140px">
                       <el-select v-model="TuploadData.id" placeholder="请选择文章">
@@ -314,7 +316,7 @@ const uploadSuccess = (response: any) => {
                   <template #footer>
                     <span class="dialog-footer">
                       <el-button @click="dialogFormVisible = false">取消</el-button>
-                      <el-upload class="upload-demo" :action="configs.APIS.BaseUrl + configs.APIS.User.SetStatus"
+                      <el-upload class="upload-demo" :action="configs.APIS.BaseUrl + configs.APIS.Teacher.SetStatus"
                         :data="TuploadData" :headers="uploadHeader" :show-file-list="false" :on-success="uploadSuccess">
                         <el-button type="primary" @click="confirmDialog">
                           上传文件

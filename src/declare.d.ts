@@ -12,4 +12,23 @@ declare module 'paper' {
   }
 }
 
-export type { Paper };
+declare module 'msg' {
+  export interface Msg {
+    title: string; // 标题
+    isNew: boolean; // 是否为新消息
+    content: string; // 消息内容
+    id: string; // 消息id - 唯一标识
+    created: string; // 消息创建时间
+    from: string; // 发出消息的人 - (昵称|真实姓名)    
+    target: string; // 接收消息的人 - (昵称|真实姓名)
+  }
+}
+
+declare module 'Student' {
+  export interface Student {
+    name: string;
+    id: string;
+  }
+}
+
+export type { Paper, Msg, Student };

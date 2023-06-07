@@ -1,6 +1,6 @@
 # BIT Web Frontend Development Course Project - Paper Management System
 
-这是北京理工大学Web前端开发课程的结课作业，主题是论文管理系统的前端部分。该项目使用了Vue和Element UI作为主要的技术栈。
+这是北京理工大学Web前端开发课程的结课作业，主题是论文管理系统的前端部分。该项目使用了Vue、Element UI、Stylus和Axios作为主要的技术栈。
 
 ## 技术栈
 
@@ -8,6 +8,8 @@
 
 - **Vue.js**：Vue是一套用于构建用户界面的渐进式框架，主要用于搭建项目的前端部分。在本项目中，我们使用了Vue 3。
 - **Element UI**：Element UI是一套基于Vue的组件库，主要用于快速搭建页面的UI部分。
+- **Stylus**：Stylus是一个强大的CSS预处理器，可以让你使用更高级的语法写样式代码。
+- **Axios**：Axios是一个基于Promise的HTTP库，可以用在浏览器和node.js中，主要用于处理项目的API请求。
 
 ## 项目文件结构
 

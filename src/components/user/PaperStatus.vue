@@ -147,6 +147,7 @@ const checkStatu = (statu: string) => {
  * @param {Record<string, string>} files - 要下载的文件的映射。键是文件名，值是文件的URL。
  */
 const downloadFilesAsZip = (files: Record<string, string>) => {
+  downloading.value = true
   // 创建一个新的JSZip实例，用于生成ZIP文件
   const zip = new JSZip();
 
@@ -185,10 +186,15 @@ const downloadFilesAsZip = (files: Record<string, string>) => {
           document.body.removeChild(link);
           // 释放URL占用的资源
           URL.revokeObjectURL(fileUrl);
+          setTimeout(() => {
+            downloading.value = false;
+          }, 500);
         })
         .catch(error => {
           // 如果在生成ZIP文件过程中出现错误，打印错误信息
           console.error('Error creating zip file:', error);
+          downloading.value = false;
+          warn("下载失败！")
         });
     })
     .catch(error => {

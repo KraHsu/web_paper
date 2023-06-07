@@ -1,40 +1,37 @@
-# web_paper
+# BIT Web Frontend Development Course Project - Paper Management System
 
-This template should help get you started developing with Vue 3 in Vite.
+这是北京理工大学Web前端开发课程的结课作业，主题是论文管理系统的前端部分。该项目使用了Vue和Element UI作为主要的技术栈。
 
-## Recommended IDE Setup
+## 技术栈
 
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur) + [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=Vue.vscode-typescript-vue-plugin).
+本项目主要使用了以下的技术栈：
 
-## Type Support for `.vue` Imports in TS
+- **Vue.js**：Vue是一套用于构建用户界面的渐进式框架，主要用于搭建项目的前端部分。在本项目中，我们使用了Vue 3。
+- **Element UI**：Element UI是一套基于Vue的组件库，主要用于快速搭建页面的UI部分。
 
-TypeScript cannot handle type information for `.vue` imports by default, so we replace the `tsc` CLI with `vue-tsc` for type checking. In editors, we need [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=Vue.vscode-typescript-vue-plugin) to make the TypeScript language service aware of `.vue` types.
+## 项目文件结构
 
-If the standalone TypeScript plugin doesn't feel fast enough to you, Volar has also implemented a [Take Over Mode](https://github.com/johnsoncodehk/volar/discussions/471#discussioncomment-1361669) that is more performant. You can enable it by the following steps:
+下面是本项目的主要文件结构：
 
-1. Disable the built-in TypeScript Extension
-    1) Run `Extensions: Show Built-in Extensions` from VSCode's command palette
-    2) Find `TypeScript and JavaScript Language Features`, right click and select `Disable (Workspace)`
-2. Reload the VSCode window by running `Developer: Reload Window` from the command palette.
+- **根目录**：包含配置文件，如`package.json`，`tsconfig.json`等，以及`README.md`和`vite.config.ts`等文件。
 
-## Customize configuration
+- **node_modules**：这个文件夹包含了项目的所有依赖库。
 
-See [Vite Configuration Reference](https://vitejs.dev/config/).
+- **src**：这个文件夹是项目的源代码文件夹，所有的Vue组件、路由、样式和脚本都在这里。
 
-## Project Setup
+    - **assets**：存放所有的样式文件。
+    - **components**：存放所有的Vue组件，按功能划分为多个子目录，如`icons`、`msg`、`user`等。
+    - **layout**：存放布局相关的组件。
+    - **router**：存放所有的路由相关文件。
+    - **utils**：存放所有的工具函数和类，如`appendJS.js`、`replaceEmptyStrings.js`等。
+    - **views**：存放所有的页面视图组件，如`AboutView.vue`、`Home.vue`等。
 
-```sh
-yarn
-```
+- **public**：这个文件夹是用来存放静态资源的，如图片、字体等。
 
-### Compile and Hot-Reload for Development
+## 版权和许可证
 
-```sh
-yarn dev
-```
+该项目根据MIT许可证许可-查看LICENSE.md文件以获取详细信息。
 
-### Type-Check, Compile and Minify for Production
+## 鸣谢
 
-```sh
-yarn build
-```
+感谢BIT的web前端开发课程。

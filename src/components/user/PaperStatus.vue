@@ -234,6 +234,9 @@ const openDialog = () => {
 const confirmDialog = () => {
   dialogFormVisible.value = false;
 }
+const uploading = () => {
+  downloading.value = true;
+}
 // 定义上传成功的处理函数
 const uploadSuccess = (response: any) => {
   if (response.code == 1) {
@@ -242,6 +245,9 @@ const uploadSuccess = (response: any) => {
   } else {
     warn(response.msg)
   }
+  setTimeout(() => {
+    downloading.value = false;
+  }, 500);
 }
 
 SearchPapers() // 执行搜索函数，加载所有论文
@@ -333,7 +339,7 @@ SearchPapers() // 执行搜索函数，加载所有论文
                     <span class="dialog-footer">
                       <el-button @click="dialogFormVisible = false">取消</el-button>
                       <el-upload class="upload-demo" :action="configs.APIS.BaseUrl + configs.APIS.User.Paper"
-                        :data="uploadData" :headers="uploadHeader" :show-file-list="false" :on-success="uploadSuccess">
+                        :data="uploadData" :headers="uploadHeader" :show-file-list="false" :on-success="uploadSuccess" :on-progress="uploading">
                         <el-button type="primary" @click="confirmDialog">
                           上传文件
                         </el-button>
@@ -360,7 +366,7 @@ SearchPapers() // 执行搜索函数，加载所有论文
                     <span class="dialog-footer">
                       <el-button @click="dialogFormVisible = false">取消</el-button>
                       <el-upload class="upload-demo" :action="configs.APIS.BaseUrl + configs.APIS.Teacher.SetStatus"
-                        :data="TuploadData" :headers="uploadHeader" :show-file-list="false" :on-success="uploadSuccess">
+                        :data="TuploadData" :headers="uploadHeader" :show-file-list="false" :on-success="uploadSuccess" :on-progress="uploading">
                         <el-button type="primary" @click="confirmDialog">
                           上传文件
                         </el-button>
@@ -386,7 +392,7 @@ SearchPapers() // 执行搜索函数，加载所有论文
                     .{{ paper.type }}
                   </span>
                 </td>
-                <td class="paper_size paper_td">{{ paper.size }}</td>
+                <td class="paper_size paper_td">{{ paper.size > 1000 ? paper.size/1000 + "MB" : paper.size + 'KB' }}</td>
                 <td class="paper_download paper_td">
                   <button class="paper_download_button" :file-link="paper.downloadLink"
                     :file-name="paper.title + '.' + paper.type" @click="downloadFile(paper.downloadLink, paper.title)">

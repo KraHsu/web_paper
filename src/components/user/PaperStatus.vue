@@ -10,30 +10,10 @@ import Upload from '../icons/upload.vue'; // 导入上传图标组件
 import type { Paper } from '@/declare'; // 导入Paper类型
 import useCurrentInstance from "@/utils/useCurrentInstance"; // 导入自定义Hook
 import { configs } from '@/config.js'; // 导入配置文件
-import { ElNotification } from 'element-plus'; // 导入Element Plus的通知组件
+import { succ, warn } from "@/utils/msg";
 const { proxy } = useCurrentInstance(); // 使用自定义Hook获取当前实例的代理对象
 
 const downloading = ref(false) // 控制下载状态的响应式引用，false表示未下载，true表示正在下载
-
-// 定义成功和错误的提示消息函数
-const succ = (t: string, m: string) => {
-  ElNotification({
-    title: t,
-    message: m,
-    type: 'success',
-    showClose: false,
-    duration: 2000
-  })
-}
-
-const warn = (m: string) => {
-  ElNotification({
-    title: 'Error!!',
-    message: m,
-    type: 'error',
-    duration: 2000
-  })
-}
 
 const papers = ref<Paper[]>([]); // 保存所有论文的响应式引用
 const paperSearch = ref('') // 保存搜索关键字的响应式引用

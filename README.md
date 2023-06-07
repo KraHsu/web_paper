@@ -19,12 +19,12 @@
 
 - **src**：这个文件夹是项目的源代码文件夹，所有的Vue组件、路由、样式和脚本都在这里。
 
-    - **assets**：存放所有的样式文件。
-    - **components**：存放所有的Vue组件，按功能划分为多个子目录，如`icons`、`msg`、`user`等。
-    - **layout**：存放布局相关的组件。
-    - **router**：存放所有的路由相关文件。
-    - **utils**：存放所有的工具函数和类，如`appendJS.js`、`replaceEmptyStrings.js`等。
-    - **views**：存放所有的页面视图组件，如`AboutView.vue`、`Home.vue`等。
+  - **assets**：存放所有的样式文件。
+  - **components**：存放所有的Vue组件，按功能划分为多个子目录，如`icons`、`msg`、`user`等。
+  - **layout**：存放布局相关的组件。
+  - **router**：存放所有的路由相关文件。
+  - **utils**：存放所有的工具函数和类，如`appendJS.js`、`replaceEmptyStrings.js`等。
+  - **views**：存放所有的页面视图组件，如`AboutView.vue`、`Home.vue`等。
 
 - **public**：这个文件夹是用来存放静态资源的，如图片、字体等。
 

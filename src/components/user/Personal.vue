@@ -1,11 +1,10 @@
 <script setup lang='ts'>
 import type { UploadProps } from 'element-plus'
-// import edit from '@/components/icons/edit.vue'
-import { ElNotification } from 'element-plus';
 import useCurrentInstance from "@/utils/useCurrentInstance";
 import replaceEmptyStrings from "@/utils/replaceEmptyStrings";
+import { succ, warn } from "@/utils/msg";
 import { configs } from '@/config.js';
-import { reactive, computed, ref } from 'vue';
+import { reactive, ref } from 'vue';
 import { watch } from 'vue';
 import router from '@/router';
 const { proxy } = useCurrentInstance()
@@ -58,25 +57,6 @@ const beginWatch = () => {
   stopWatch = watch(personaldata, (ov, nv) => {
     withoutChange.value = false;
     stopWatch()
-  })
-}
-
-const succ = (t: string, m: string) => {
-  ElNotification({
-    title: t,
-    message: m,
-    type: 'success',
-    showClose: false,
-    duration: 1000
-  })
-}
-
-const warn = (m: string) => {
-  ElNotification({
-    title: 'Error!!',
-    message: m,
-    type: 'error',
-    duration: 2000
   })
 }
 

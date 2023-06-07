@@ -2,28 +2,10 @@
 import { ref, reactive, computed, onUnmounted, onMounted } from 'vue';
 import useCurrentInstance from "@/utils/useCurrentInstance";
 import router from '@/router';
-import { ElNotification } from 'element-plus';
+import { succ, warn } from "@/utils/msg";
 import { configs } from '@/config.js';
 const { proxy } = useCurrentInstance();
 
-const succ = (t: string, m: string) => {
-  ElNotification({
-    title: t,
-    message: m,
-    type: 'success',
-    showClose: false,
-    duration: 1000
-  })
-}
-
-const warn = (m: string) => {
-  ElNotification({
-    title: 'Error!!',
-    message: m,
-    type: 'error',
-    duration: 3000
-  })
-}
 // proxy.$appendJS('./js/login.js')
 const State = reactive({
   isSignup: true,

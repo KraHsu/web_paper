@@ -1,7 +1,7 @@
 const configs = {
   APIS: {
-    // BaseUrl: 'http://192.168.137.191:8080',
-    BaseUrl: 'https://api.haichi.top:8848',
+    BaseUrl: 'http://ys8.hivemc.top:23425',
+    // BaseUrl: 'https://api.haichi.top:23425',
     User: {
       Login: '/user/login',
       Register: '/user/register',

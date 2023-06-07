@@ -50,7 +50,7 @@ onMounted(() => {
 })
 
 const data = localStorage.getItem('user_data') ? JSON.parse(localStorage.getItem('user_data')!) : { token: null, user: { id: null } }
-const hasnew = data.hasNew
+const hasnew: string = data.hasNew || false
 </script>
 
 <template>

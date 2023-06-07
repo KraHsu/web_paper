@@ -14,8 +14,8 @@ import useCurrentInstance from "@/utils/useCurrentInstance";
 import { configs } from '@/config.js';
 import { ElNotification } from 'element-plus';
 const { proxy } = useCurrentInstance();
-// 标题 作者 创建时间 更新时间 类型 大小 语言 下载链接
 
+const downloading = ref(false)
 
 // 提示消息
 const succ = (t: string, m: string) => {
@@ -59,34 +59,46 @@ const statusClass: Record<string, string> = {
   '待修改': 'needsModification'
 }
 
-const downloadFile = (url: string, name: string) => {
+/**
+ * 使用fetch API从服务器下载文件并通过模拟点击事件来保存文件
+ *
+ * @param {string} url - 需要下载的文件的URL后缀。此后缀将添加到BaseURL后
+ * @param {string} name - 下载文件的名称
+ */
+ const downloadFile = (url: string, name: string) => {
+  // 将文件的URL后缀添加到BaseURL后以创建完整的文件下载URL
   url = configs.APIS.BaseUrl + '/downloadpaper/' + url;
+
+  // 使用fetch API从服务器获取文件
   fetch(url)
-    .then(response => response.blob())
+    .then(response => response.blob()) // 将获取的响应转换为blob对象
     .then(blob => {
-      const filename = name;
+      const filename = name; // 将下载文件的名称设置为传入的参数
 
-      const fileUrl = URL.createObjectURL(blob);
+      const fileUrl = URL.createObjectURL(blob); // 创建表示blob对象的URL
 
-      let link = document.createElement('a');
-      link.style.display = 'none';
-      link.href = fileUrl;
-      link.setAttribute('download', filename); // 使用提取的文件名作为下载文件的名称
+      let link = document.createElement('a'); // 创建一个新的<a>元素
+      link.style.display = 'none'; // 隐藏该元素，因为我们不希望将其显示在页面上
+      link.href = fileUrl; // 将href属性设置为blob对象的URL，使链接指向我们的文件
+      link.setAttribute('download', filename); // 设置下载属性，当用户点击链接时，浏览器会尝试下载链接的目标，而不是导航到它
 
+      // 将链接元素添加到页面，使我们能够模拟点击它
       document.body.appendChild(link);
+
+      // 模拟点击链接元素，这将导致浏览器开始下载文件
       link.click();
+
+      // 下载启动后，我们不再需要链接元素，所以我们将其从页面中移除
       document.body.removeChild(link);
 
-      URL.revokeObjectURL(fileUrl); // 释放URL对象
+      // 使用完blob对象的URL后，我们需要撤销它，以释放浏览器的内存资源
+      URL.revokeObjectURL(fileUrl);
     })
     .catch(error => {
+      // 如果在文件下载过程中出现任何错误，我们将在控制台中打印错误信息
       console.error('File download error:', error);
     });
 };
-
-const uploadFile = () => {
-
-}
 
 const type_pdf = ref(true);
 const type_doc = ref(true);
@@ -213,7 +225,7 @@ const uploadSuccess = (response: any) => {
         @change="SearchPapers" />
     </header>
     <hr v-if="id">
-    <article class="outer_container">
+    <article class="outer_container" :v-loading="downloading">
       <template v-if="papers">
         <table class="my_papers">
           <thead class="my_papers_head" v-if="id">

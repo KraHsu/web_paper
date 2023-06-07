@@ -43,7 +43,9 @@ try {
       responseData.email = responseData!.id + '@bit.edu.cn (默认)'
     }
     Object.assign(personaldata, response.data)
-    loading.value = false
+    setTimeout(() => {
+      loading.value = false
+    }, 500);
     beginWatch()
   }, () => {
     loading.value = false

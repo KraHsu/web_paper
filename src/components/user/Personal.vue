@@ -1,5 +1,4 @@
 <script setup lang='ts'>
-import './Createperson.styl'
 import type { UploadProps } from 'element-plus'
 // import edit from '@/components/icons/edit.vue'
 import { ElNotification } from 'element-plus';

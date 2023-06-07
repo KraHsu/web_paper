@@ -1,0 +1,33 @@
+web_paper
+│  env.d.ts // TypeScript环境变量声明
+│  index.html // 应用的入口HTML文件
+│  
+├─node_modules // 存放项目依赖的模块
+│  
+└─src // 源码目录
+    │  App.vue // Vue应用的根组件
+    │  config.js // 应用的配置文件
+    │  declare.d.ts // TypeScript的自定义类型声明文件
+    │  main.ts // Vue应用的主入口文件
+    │  shims-vue.d.ts // 用于让TypeScript能够理解.vue文件
+    │  
+    ├─assets // 静态资源目录
+    │  └─styles // 样式文件目录
+    │          
+    ├─components // Vue组件目录
+    │  │  
+    │  ├─icons // 图标组件目录
+    │  │      
+    │  ├─msg // 消息相关组件目录
+    │  │      
+    │  └─user // 用户相关组件目录
+    │          
+    ├─layout // 页面布局组件目录
+    │      
+    ├─router // Vue Router路由配置目录
+    │      
+    ├─utils // 工具函数目录
+    │  │  
+    │  └─http // 网络请求相关的工具函数目录
+    │          
+    └─views // 视图组件目录，通常一个视图组件对应一个页面

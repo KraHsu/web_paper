@@ -1,5 +1,4 @@
 <script setup lang='ts'>
-import './msg.styl'
 import type { Msg, Student } from '@/declare';
 import { reactive, ref } from 'vue';
 import useCurrentInstance from "@/utils/useCurrentInstance";

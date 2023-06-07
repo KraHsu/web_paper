@@ -1,23 +1,21 @@
 <script setup lang='ts'>
-import JSZip from 'jszip';
-// 文件压缩
+// 导入需要的库和模块
+import JSZip from 'jszip'; // 用于生成压缩文件（zip）
+import { Search } from '@element-plus/icons-vue'; // 导入Element Plus的图标
+import { ref, reactive } from 'vue'; // 导入Vue 3的ref和reactive函数
+import router from '@/router'; // 导入Vue router
+import Download from '../icons/download.vue'; // 导入下载图标组件
+import DropDown from '../icons/drop_down.vue'; // 导入下拉图标组件
+import Upload from '../icons/upload.vue'; // 导入上传图标组件
+import type { Paper } from '@/declare'; // 导入Paper类型
+import useCurrentInstance from "@/utils/useCurrentInstance"; // 导入自定义Hook
+import { configs } from '@/config.js'; // 导入配置文件
+import { ElNotification } from 'element-plus'; // 导入Element Plus的通知组件
+const { proxy } = useCurrentInstance(); // 使用自定义Hook获取当前实例的代理对象
 
-import './PaperStatus.styl';
-import { Search } from '@element-plus/icons-vue'
-import { ref, reactive } from 'vue';
-import router from '@/router';
-import Download from '../icons/download.vue';
-import DropDown from '../icons/drop_down.vue';
-import Upload from '../icons/upload.vue';
-import type { Paper } from '@/declare';
-import useCurrentInstance from "@/utils/useCurrentInstance";
-import { configs } from '@/config.js';
-import { ElNotification } from 'element-plus';
-const { proxy } = useCurrentInstance();
+const downloading = ref(false) // 控制下载状态的响应式引用，false表示未下载，true表示正在下载
 
-const downloading = ref(false)
-
-// 提示消息
+// 定义成功和错误的提示消息函数
 const succ = (t: string, m: string) => {
   ElNotification({
     title: t,
@@ -37,12 +35,16 @@ const warn = (m: string) => {
   })
 }
 
-const papers = ref<Paper[]>([]);
-const paperSearch = ref('')
+const papers = ref<Paper[]>([]); // 保存所有论文的响应式引用
+const paperSearch = ref('') // 保存搜索关键字的响应式引用
+
+// 从本地存储中获取用户数据，如果没有则设置为默认值
 const data = localStorage.getItem('user_data') ? JSON.parse(localStorage.getItem('user_data')!) : { token: null, user: { id: null } }
-const token = data.token
-const id = data.user.id;
-const identy = data.user.status;
+const token = data.token // 获取用户的token
+const id = data.user.id; // 获取用户的id
+const identy = data.user.status; // 获取用户的身份状态
+
+// 定义一个异步函数，用于搜索所有论文
 const SearchPapers = async () => {
   const response = await proxy.$post(configs.APIS.User.Getallpaper.replace('student', identy), { "id": id, "keyWords": paperSearch.value }, { headers: { 'token': token } })
   if (response.code == 1) {
@@ -50,8 +52,8 @@ const SearchPapers = async () => {
   }
   // console.table(response.data)
 }
-SearchPapers()
 
+// 定义一个映射，将论文的状态映射为对应的样式类名
 const statusClass: Record<string, string> = {
   "未知": 'unknown',
   '已完成': 'completed',
@@ -65,11 +67,11 @@ const statusClass: Record<string, string> = {
  * @param {string} url - 需要下载的文件的URL后缀。此后缀将添加到BaseURL后
  * @param {string} name - 下载文件的名称
  */
- const downloadFile = (url: string, name: string) => {
-  // 将文件的URL后缀添加到BaseURL后以创建完整的文件下载URL
+const downloadFile = (url: string, name: string) => {
+  // 文件下载URL
   url = configs.APIS.BaseUrl + '/downloadpaper/' + url;
-
-  // 使用fetch API从服务器获取文件
+  downloading.value = true;
+  // 使用 fetch 从服务器获取文件
   fetch(url)
     .then(response => response.blob()) // 将获取的响应转换为blob对象
     .then(blob => {
@@ -78,8 +80,8 @@ const statusClass: Record<string, string> = {
       const fileUrl = URL.createObjectURL(blob); // 创建表示blob对象的URL
 
       let link = document.createElement('a'); // 创建一个新的<a>元素
-      link.style.display = 'none'; // 隐藏该元素，因为我们不希望将其显示在页面上
-      link.href = fileUrl; // 将href属性设置为blob对象的URL，使链接指向我们的文件
+      link.style.display = 'none'; // 隐藏该元素，因为不希望将其显示在页面上
+      link.href = fileUrl; // 将 href 属性设置为 blob 对象的 URL，使链接指向文件
       link.setAttribute('download', filename); // 设置下载属性，当用户点击链接时，浏览器会尝试下载链接的目标，而不是导航到它
 
       // 将链接元素添加到页面，使我们能够模拟点击它
@@ -93,16 +95,23 @@ const statusClass: Record<string, string> = {
 
       // 使用完blob对象的URL后，我们需要撤销它，以释放浏览器的内存资源
       URL.revokeObjectURL(fileUrl);
+      setTimeout(() => {
+        downloading.value = false;
+      }, 500);
     })
     .catch(error => {
       // 如果在文件下载过程中出现任何错误，我们将在控制台中打印错误信息
       console.error('File download error:', error);
+      downloading.value = false;
+      warn("下载失败");
     });
 };
 
+// 定义响应式引用，保存各种类型文件的选中状态
 const type_pdf = ref(true);
 const type_doc = ref(true);
 const type_docx = ref(true);
+// 定义一个函数，根据类型检查文件是否被选中
 const checkType = (type: string) => {
   switch (type) {
     case 'doc':
@@ -113,11 +122,12 @@ const checkType = (type: string) => {
       return type_pdf.value;
   }
 }
-
+// 定义响应式引用，保存各种状态的选中状态
 const statu_unknown = ref(true);
 const statu_completed = ref(true);
 const statu_underReview = ref(true);
 const statu_needsModification = ref(true);
+// 定义一个函数，根据状态检查是否被选中
 const checkStatu = (statu: string) => {
   switch (statu) {
     case '未知':
@@ -131,60 +141,92 @@ const checkStatu = (statu: string) => {
   }
 }
 
+/**
+ * 下载多个文件并打包为一个ZIP文件
+ *
+ * @param {Record<string, string>} files - 要下载的文件的映射。键是文件名，值是文件的URL。
+ */
 const downloadFilesAsZip = (files: Record<string, string>) => {
+  // 创建一个新的JSZip实例，用于生成ZIP文件
   const zip = new JSZip();
 
+  // 对于每个文件，创建一个Promise，这个Promise会下载该文件，并将其添加到ZIP文件中
   const fetchPromises = Object.keys(files).map((key) => {
     const filename = key;
     const url = files[key];
-    return fetch(url)
-      .then(response => response.blob())
+    return fetch(url) // 从服务器下载文件
+      .then(response => response.blob()) // 将响应转换为Blob对象
       .then(blob => {
-        zip.file(filename, blob);
+        zip.file(filename, blob); // 将Blob对象添加到ZIP文件中
       })
       .catch(error => {
+        // 如果在下载文件过程中出现错误，打印错误信息
         console.error(`Error downloading file ${filename}:`, error);
       });
   });
 
+  // 等待所有文件都下载完成并添加到ZIP文件中
   Promise.all(fetchPromises)
     .then(() => {
+      // 生成ZIP文件的Blob对象
       zip.generateAsync({ type: 'blob' })
         .then(content => {
+          // 创建表示ZIP文件的Blob对象的URL
           const fileUrl = URL.createObjectURL(content);
+          // 创建一个新的<a>元素，用于下载ZIP文件
           const link = document.createElement('a');
-          link.style.display = 'none';
-          link.href = fileUrl;
-          link.setAttribute('download', 'files.zip');
+          link.style.display = 'none'; // 隐藏该元素，因为不希望将其显示在页面上
+          link.href = fileUrl; // 设置href属性为ZIP文件的URL
+          link.setAttribute('download', 'files.zip'); // 设置下载属性，使得点击该元素时会下载ZIP文件
+          // 将<a>元素添加到页面中，以便能够模拟点击它
           document.body.appendChild(link);
-          link.click();
+          link.click(); // 模拟点击<a>元素，开始下载ZIP文件
+          // 下载完成后，将<a>元素从页面中移除
           document.body.removeChild(link);
+          // 释放URL占用的资源
           URL.revokeObjectURL(fileUrl);
         })
         .catch(error => {
+          // 如果在生成ZIP文件过程中出现错误，打印错误信息
           console.error('Error creating zip file:', error);
         });
     })
     .catch(error => {
+      // 如果在下载文件过程中出现错误，打印错误信息
       console.error('Error downloading files:', error);
     });
 };
 
+/**
+ * 为所有选中的文件生成下载链接，并使用 `downloadFilesAsZip` 函数将它们打包为一个ZIP文件下载
+ */
 const DownloadAll = () => {
+  // 从DOM中选择所有被选中的文件的下载按钮元素
   const selectedFiles = document.querySelectorAll('[selected="true"] .paper_download_button');
+
+  // 创建一个空的对象，用于存储文件名和对应的下载链接
   const fileDict: Record<string, string> = {};
 
+  // 遍历所有选中的文件
   selectedFiles.forEach(fileElement => {
+    // 从元素的 'file-name' 属性中获取文件名
     const fileName: string = fileElement.getAttribute('file-name') || '';
+
+    // 生成文件的下载链接，链接由基础URL、静态路径和文件的 'file-link' 属性组成
     const fileLink: string = `${configs.APIS.BaseUrl}/downloadpaper/${fileElement.getAttribute('file-link')}`;
-    // console.table({fileName, fileLink});
+
+    // 将文件名和对应的下载链接添加到 `fileDict` 对象中
     fileDict[fileName] = fileLink;
   });
 
+  // 调用 `downloadFilesAsZip` 函数，将 `fileDict` 中的所有文件打包为一个ZIP文件并下载
   downloadFilesAsZip(fileDict);
-}
+};
 
-const dialogFormVisible = ref(false);
+
+
+const dialogFormVisible = ref(false); // 控制上传对话框的显示隐藏的响应式引用
+// 定义上传数据的响应式对象
 const uploadData = reactive({
   "id": id,
   "author": '',
@@ -195,18 +237,18 @@ const TuploadData = reactive({
   "id": '',
   "status": '',
 })
+// 定义上传头信息的对象
 const uploadHeader = {
   'token': token
 }
-
+// 定义打开和确认对话框的函数
 const openDialog = () => {
   dialogFormVisible.value = true;
 }
-
 const confirmDialog = () => {
   dialogFormVisible.value = false;
 }
-
+// 定义上传成功的处理函数
 const uploadSuccess = (response: any) => {
   if (response.code == 1) {
     succ('成功！', '论文已上传成功')
@@ -215,6 +257,8 @@ const uploadSuccess = (response: any) => {
     warn(response.msg)
   }
 }
+
+SearchPapers() // 执行搜索函数，加载所有论文
 </script>
 
 <template>
@@ -225,7 +269,7 @@ const uploadSuccess = (response: any) => {
         @change="SearchPapers" />
     </header>
     <hr v-if="id">
-    <article class="outer_container" :v-loading="downloading">
+    <article class="outer_container" v-loading="downloading">
       <template v-if="papers">
         <table class="my_papers">
           <thead class="my_papers_head" v-if="id">
@@ -272,7 +316,7 @@ const uploadSuccess = (response: any) => {
             <tr v-if="id">
               <td class="paper_statu paper_td"></td>
               <td class="paper_headline paper_td">
-                {{identy == 'student' ? '上传论文' : '修 改 论 文 状 态'}}
+                {{ identy == 'student' ? '上传论文' : '修 改 论 文 状 态' }}
               </td>
               <td class="paper_author paper_td"> - </td>
               <td class="paper_created paper_td"> - </td>
@@ -315,7 +359,8 @@ const uploadSuccess = (response: any) => {
                   <el-form :model="TuploadData">
                     <el-form-item label="文章" label-width="140px">
                       <el-select v-model="TuploadData.id" placeholder="请选择文章">
-                        <el-option v-for="paper in papers" :label="`${paper.title} | ${paper.author}`" :value="paper.id" />
+                        <el-option v-for="paper in papers" :label="`${paper.title} | ${paper.author}`"
+                          :value="paper.id" />
                       </el-select>
                     </el-form-item>
                     <el-form-item label="是否需要修改" label-width="140px">
